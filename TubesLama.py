@@ -232,57 +232,138 @@ def AddTranskrip(S: SetTranskrip, T: Transkrip) -> SetTranskrip:
         if GetNIM(GetMhs(FirstElmt(S))) == GetNIM(GetMhs(T)):
             return S
         else:
-            return Konsi([FirstElmt(S)], AddTranskrip(Tail(S), T))
+            return Konso([FirstElmt(S)], AddTranskrip(Tail(S), T))
 
 # AddNilaiMatkul: <SetTranskrip, string, string, real> → SetTranskrip
 #   {AddNilaiMatkul(S, nim, namaMK, nilai) menambahkan nilai baru nilai ke
 #    mata kuliah namaMK pada transkrip mahasiswa dengan NIM nim di
 #    SetTranskrip S}
 # REALISASI
+def AddNilaiPadaList(listMK, namaMK, nilai):
+    if IsEmpty(listMK):
+        return []
+    else:
+        if GetNamaMK(FirstElmt(listMK)) == namaMK:
+            return Konso(MakeMatkul(GetNamaMK(FirstElmt(listMK)), GetSKS(FirstElmt(listMK)), Konsi(GetNilai(FirstElmt(listMK)), nilai)),
+                         Tail(listMK))
+        else:
+            return Konso(FirstElmt(listMK), AddNilaiPadaList(Tail(listMK), namaMK, nilai))
+
 def AddNilaiMatkul(S: SetTranskrip, nim: str, namaMK: str, nilai: float) -> SetTranskrip:
-    return
+    if IsEmpty(S):
+        return []
+    else:
+        if GetNIM(GetMhs(FirstElmt(S))) == nim:
+            return Konso(MakeTranskrip(GetMhs(FirstElmt(S)), AddNilaiPadaList(GetListMatkul(FirstElmt(S)), namaMK, nilai)),
+                         Tail(S))
+        else:
+            return Konso(FirstElmt(S), AddNilaiMatkul(Tail(S), nim, namaMK, nilai))
+
 
 # CariTranskripMhs: <SetTranskrip, string> → Transkrip
 #   {CariTranskripMhs(S, nim) mencari dan mengembalikan transkrip pertama
 #    dengan NIM nim dari SetTranskrip S}
 # REALISASI
 def CariTranskripMhs(S: SetTranskrip, nim: str) -> Transkrip:
-    return
+    if IsEmpty(S):
+        return []
+    else:
+        if GetNIM(GetMhs(FirstElmt(S))) == nim:
+            return FirstElmt(S)
+        else:
+            return CariTranskripMhs(Tail(S), nim)
 
 # TopIPK: SetTranskrip → Mhs
 #   {TopIPK(S) menghasilkan mahasiswa dengan IPK tertinggi dari
 #    SetTranskrip S }
 # REALISASI
-def TopIPK(S: SetTranskrip) -> Mhs:
-    return
+
+def TopIPK(S):
+    def find_top(S, max_ipk, mhs_top):
+        if IsEmpty(S):
+            return mhs_top
+        else:
+            T = FirstElmt(S)
+            ipk = IPKTranskrip(T)
+            if ipk > max_ipk:
+                return find_top(Tail(S), ipk, GetMhs(T))
+            else:
+                return find_top(Tail(S), max_ipk, mhs_top)
+    if IsEmpty(S):
+        return []
+    else:
+        T_first = FirstElmt(S)
+        return find_top(Tail(S), IPKTranskrip(T_first), GetMhs(T_first))
 
 # CountMhsPernahMengulang: SetTranskrip → integer
 #   {CountMhsPernahMengulang(S) menghitung jumlah mahasiswa yang
 #    pernah mengulang minimal 1 mata kuliah pada SetTranskrip S}
 # REALISASI
 def CountMhsPernahMengulang(S: SetTranskrip) -> int:
-    return
+    if IsEmpty(S):
+        return 0
+    else:
+        T = FirstElmt(S)
+        if JumlahMatkulMengulang(T) > 0:
+            return 1 + CountMhsPernahMengulang(Tail(S))
+        else:
+            return CountMhsPernahMengulang(Tail(S))
 
 # CountMhsLulusSemuaMatkul: SetTranskrip → integer
 #   {CountMhsLulusSemuaMatkul(S) menghitung jumlah mahasiswa yang
 #    lulus seluruh mata kuliah yang diambil pada SetTranskrip S}
 # REALISASI
 def CountMhsLulusSemuaMatkul(S: SetTranskrip) -> int:
-    return
+    def all_passed(listMK):
+        if IsEmpty(listMK):
+            return True
+        else:
+            return LulusMK(FirstElmt(listMK)) and all_passed(Tail(listMK))
+    
+    if IsEmpty(S):
+        return 0
+    else:
+        T = FirstElmt(S)
+        if all_passed(GetListMatkul(T)):
+            return 1 + CountMhsLulusSemuaMatkul(Tail(S))
+        else:
+            return CountMhsLulusSemuaMatkul(Tail(S))
 
 # MatkulPalingSeringDiulang: SetTranskrip → string
 #   {MatkulPalingSeringDiulang(S) menghasilkan nama mata kuliah yang
 #    paling sering diulang (frekuensi tertinggi) pada SetTranskrip S}
 # REALISASI
+
+
+def MKMaxPadaList(listMK, S):
+    if IsEmpty(listMK):
+        return ""
+    elif IsEmpty(Tail(listMK)):
+        return GetNamaMK(FirstElmt(listMK))
+    else:
+        if CountMengulangMKPadaSet(S, GetNamaMK(FirstElmt(listMK))) >= CountMengulangMKPadaSet(S, MKMaxPadaList(Tail(listMK), S)):
+            return GetNamaMK(FirstElmt(listMK))
+        else:
+            return MKMaxPadaList(Tail(listMK), S)
+        
 def MatkulPalingSeringDiulang(S: SetTranskrip) -> str:
-    return
+    if IsEmpty(S):
+        return ""
+    else:
+        return MKMaxPadaList(GetListMatkul(FirstElmt(S)), S)
 
 # CountMhsDenganIPKRentang: <SetTranskrip, real, real> → integer
 #   {CountMhsDenganIPKRentang(S, a, b) menghitung jumlah mahasiswa
 #    dengan IPK dalam rentang [a, b] pada SetTranskrip S}
 # REALISASI
 def CountMhsDenganIPKRentang(S: SetTranskrip, a: float, b: float) -> int:
-    return
+    if IsEmpty(S):
+        return 0
+    else:
+        if a <= IPKTranskrip(FirstElmt(S)) <= b:
+            return 1 + CountMhsDenganIPKRentang(Tail(S), a, b)
+        else:
+            return CountMhsDenganIPKRentang(Tail(S), a, b)
 
 # APLIKASI
 S1 = MakeSetTranskrip() 

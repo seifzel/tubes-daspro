@@ -109,6 +109,51 @@ def GetMhs(T: Transkrip) -> Mhs:
 def GetListMatkul(T: Transkrip) -> list:
     return T[1]
 # **************************************************************
+# DEFINISI DAN SPESIFIKASI FUNGSI ANTARA
+'''
+{Definisi dan spesifikasi untuk fungsi antara terletak pada file list_operators.py. Implementasi fungsi
+konstruktor, selektor, predikat, dan operator koleksi objek list dijelaskan pada file list_operators.py.
+Fungsi di dalam file list_operators.py diimpor ke file ini menggunakan fungsi import bawaan bahasa
+pemrograman python.}
+'''
+# **************************************************************
+# REALISASI FUNGSI ANTARA
+from list_operators import *
+
+def MaxTranskrip(S):
+    if IsEmpty(S):
+        return []
+    elif IsEmpty(Tail(S)):
+        return FirstElmt(S)
+    else:
+        if IPKTranskrip(FirstElmt(S)) >= IPKTranskrip(MaxTranskrip(Tail(S))):
+            return FirstElmt(S)
+        else:
+            return MaxTranskrip(Tail(S))
+
+def MKMaxPadaList(listMK, S):
+    if IsEmpty(listMK):
+        return ""
+    elif IsEmpty(Tail(listMK)):
+        return GetNamaMK(FirstElmt(listMK))
+    else:
+        if CountMengulangMKPadaSet(S, GetNamaMK(FirstElmt(listMK))) >= CountMengulangMKPadaSet(S, MKMaxPadaList(Tail(listMK), S)):
+            return GetNamaMK(FirstElmt(listMK))
+        else:
+            return MKMaxPadaList(Tail(listMK), S)
+
+def CountMengulangMKPadaSet(S, namaMK):
+    if IsEmpty(S):
+        return 0
+    else:
+        if IsEmpty(CariMatkul(FirstElmt(S), namaMK)):
+            return CountMengulangMKPadaSet(Tail(S), namaMK)
+        else:
+            if MengulangMK(CariMatkul(FirstElmt(S), namaMK)):
+                return 1 + CountMengulangMKPadaSet(Tail(S), namaMK)
+            else:
+                return CountMengulangMKPadaSet(Tail(S), namaMK)
+# **************************************************************
 # DEFINISI DAN SPESIFIKASI OPERATOR
 '''
 NilaiSekarangMK: Matkul → real
@@ -239,45 +284,64 @@ def AddTranskrip(S: SetTranskrip, T: Transkrip) -> SetTranskrip:
             return Konsi([FirstElmt(S)], AddTranskrip(Tail(S), T))
 
 def AddNilaiMatkul(S: SetTranskrip, nim: str, namaMK: str, nilai: float) -> SetTranskrip:
-    return
+    if IsEmpty(S):
+        return []
+    else:
+        if GetNIM(GetMhs(FirstElmt(S))) == nim:
+            return Konso(MakeTranskrip(GetMhs(FirstElmt(S)), AddNilaiPadaList(GetListMatkul(FirstElmt(S)), namaMK, nilai)),
+                         Tail(S))
+        else:
+            return Konso(FirstElmt(S), AddNilaiMatkul(Tail(S), nim, namaMK, nilai))
 
 def CariTranskripMhs(S: SetTranskrip, nim: str) -> Transkrip:
-    return
+    if IsEmpty(S):
+        return []
+    else:
+        if GetNIM(GetMhs(FirstElmt(S))) == nim:
+            return FirstElmt(S)
+        else:
+            return CariTranskripMhs(Tail(S), nim)
 
 def TopIPK(S: SetTranskrip) -> Mhs:
-    return
+    if IsEmpty(S):
+        return []
+    else:
+        return GetMhs(MaxTranskrip(S))
 
 def CountMhsPernahMengulang(S: SetTranskrip) -> int:
-    return
+    if IsEmpty(S):
+        return 0
+    else:
+        if JumlahMatkulMengulang(FirstElmt(S)) > 0:
+            return 1 + CountMhsPernahMengulang(Tail(S))
+        else:
+            return CountMhsPernahMengulang(Tail(S))
 
 def CountMhsLulusSemuaMatkul(S: SetTranskrip) -> int:
-    return
+    if IsEmpty(S):
+        return 0
+    else:
+        if TotalSKSLulus(FirstElmt(S)) == TotalSKS(FirstElmt(S)):
+            return 1 + CountMhsLulusSemuaMatkul(Tail(S))
+        else:
+            return CountMhsLulusSemuaMatkul(Tail(S))
+
 
 def MatkulPalingSeringDiulang(S: SetTranskrip) -> str:
-    return
+    if IsEmpty(S):
+        return ""
+    else:
+        return MKMaxPadaList(GetListMatkul(FirstElmt(S)), S)
 
 def CountMhsDenganIPKRentang(S: SetTranskrip, a: float, b: float) -> int:
-    return
+    if IsEmpty(S):
+        return 0
+    else:
+        if a <= IPKTranskrip(FirstElmt(S)) <= b:
+            return 1 + CountMhsDenganIPKRentang(Tail(S), a, b)
+        else:
+            return CountMhsDenganIPKRentang(Tail(S), a, b)
 # **************************************************************
-# DEFINISI DAN SPESIFIKASI FUNGSI ANTARA
-'''
-{Definisi dan spesifikasi untuk fungsi antara terletak pada file list_operators.py. Implementasi fungsi
-konstruktor, selektor, predikat, dan operator koleksi objek list dijelaskan pada file list_operators.py.
-Fungsi di dalam file list_operators.py diimpor ke file ini menggunakan fungsi import bawaan bahasa
-pemrograman python.}
-'''
-# **************************************************************
-# REALISASI FUNGSI ANTARA
-from list_operators import *
-# **************************************************************
-
-
-
-
-
-#
-# **************************************************************
-#
 # APLIKASI
 M = MakeMhs("A11.2020.01234", "Reno") # -> Membuat objek Mhs
 MK1 = MakeMatkul("Daspro", 3, [2.0, 3.0]) # -> Membuat objek Matkul
@@ -327,5 +391,4 @@ print(CountMhsPernahMengulang(S7) )
 print(CountMhsLulusSemuaMatkul(S7))
 print(MatkulPalingSeringDiulang(S7))
 print(CountMhsDenganIPKRentang(S7, 2.0, 3.0))
-#
 # **************************************************************
