@@ -28,6 +28,12 @@ type SetTranskrip: <Mhs, list of Matkul>
     {<Mhs, list of Matkul> adalah sebuah SetTranskrip dengan list kosong}
 '''
 # **************************************************************
+# REALISASI TYPE
+type Mhs = tuple[str,str]
+type Matkul = tuple[str,int,list]
+type Transkrip = tuple[Mhs,list]
+type SetTranskrip = tuple[list]
+# **************************************************************
 # DEFINISI DAN SPESIFIKASI FUNGSI KONSTRUKTOR
 '''
 MakeMhs: 2 string -> Mhs
@@ -43,6 +49,19 @@ MakeTranskrip: <Mhs, list of Matkul> → Transkrip
 MakeSetTranskrip: → SetTranskrip
     {MakeSetTranskrip() membuat SetTranskrip kosong (list kosong)}
 '''
+# **************************************************************
+# REALISASI FUNGSI KONSTRUKTOR
+def MakeMhs(nim: str, nama: str) -> Mhs:
+    return [nim, nama]
+
+def MakeMatkul(nama: str, sks: int, listNilai: list) -> Matkul:
+    return [nama, sks, listNilai]
+
+def MakeTranskrip(M: Mhs, listMK: list) -> Transkrip:
+    return [M, listMK]
+
+def MakeSetTranskrip() -> SetTranskrip:
+    return []
 # **************************************************************
 # DEFINISI DAN SPESIFIKASI FUNGSI SELEKTOR
 '''
@@ -68,8 +87,30 @@ GetListMatkul: Transkrip → list of Matkul
     {GetListMatkul(T) mengambil list mata kuliah dari transkrip T}
 '''
 # **************************************************************
+# REALISASI FUNGSI SELEKTOR
+def GetNIM(M: Mhs) -> str:
+    return M[0]
+
+def GetNama(M: Mhs) -> str:
+    return M[1]
+
+def GetNamaMK(MK: Matkul) -> str:
+    return MK[0]
+
+def GetSKS(MK: Matkul) -> int:
+    return MK[1]
+
+def GetNilai(MK: Matkul) -> list:
+    return MK[2]
+
+def GetMhs(T: Transkrip) -> Mhs:
+    return T[0]
+
+def GetListMatkul(T: Transkrip) -> list:
+    return T[1]
+# **************************************************************
+# DEFINISI DAN SPESIFIKASI OPERATOR
 '''
-DEFINISI DAN SPESIFIKASI OPERATOR
 NilaiSekarangMK: Matkul → real
     {NilaiSekarangMK(MK) mengambil nilai akhir dari MK. Jika list kosong → −1.0. Jika tidak → elemen terakhir}
 
@@ -127,56 +168,7 @@ CountMhsDenganIPKRentang: <SetTranskrip, real, real> → integer
    dengan IPK dalam rentang [a, b] pada SetTranskrip S}
 '''
 # **************************************************************
-# DEFINISI DAN SPESIFIKASI FUNGSI ANTARA
-'''
-{Definisi dan spesifikasi untuk fungsi antara terletak pada file list_operators.py. Implementasi fungsi
-konstruktor, selektor, predikat, dan operator koleksi objek list dijelaskan pada file list_operators.py.
-Fungsi di dalam file list_operators.py diimpor ke file ini menggunakan fungsi import bawaan bahasa
-pemrograman python.}
-'''
-# **************************************************************
-#
-# REALISASI
-from list_operators import *
-
-type Mhs = tuple[str,str]
-type Matkul = tuple[str,int,list]
-type Transkrip = tuple[Mhs,list]
-type SetTranskrip = tuple[list]
-
-def MakeMhs(nim: str, nama: str) -> Mhs:
-    return [nim, nama]
-
-def MakeMatkul(nama: str, sks: int, listNilai: list) -> Matkul:
-    return [nama, sks, listNilai]
-
-def MakeTranskrip(M: Mhs, listMK: list) -> Transkrip:
-    return [M, listMK]
-
-def MakeSetTranskrip() -> SetTranskrip:
-    return []
-
-def GetNIM(M: Mhs) -> str:
-    return M[0]
-
-def GetNama(M: Mhs) -> str:
-    return M[1]
-
-def GetNamaMK(MK: Matkul) -> str:
-    return MK[0]
-
-def GetSKS(MK: Matkul) -> int:
-    return MK[1]
-
-def GetNilai(MK: Matkul) -> list:
-    return MK[2]
-
-def GetMhs(T: Transkrip) -> Mhs:
-    return T[0]
-
-def GetListMatkul(T: Transkrip) -> list:
-    return T[1]
-
+# REALISASI OPERATOR
 def NilaiSekarangMK(MK: Matkul) -> float:
     if IsEmpty(GetNilai(MK)):
         return -1.0
@@ -266,6 +258,23 @@ def MatkulPalingSeringDiulang(S: SetTranskrip) -> str:
 
 def CountMhsDenganIPKRentang(S: SetTranskrip, a: float, b: float) -> int:
     return
+# **************************************************************
+# DEFINISI DAN SPESIFIKASI FUNGSI ANTARA
+'''
+{Definisi dan spesifikasi untuk fungsi antara terletak pada file list_operators.py. Implementasi fungsi
+konstruktor, selektor, predikat, dan operator koleksi objek list dijelaskan pada file list_operators.py.
+Fungsi di dalam file list_operators.py diimpor ke file ini menggunakan fungsi import bawaan bahasa
+pemrograman python.}
+'''
+# **************************************************************
+# REALISASI FUNGSI ANTARA
+from list_operators import *
+# **************************************************************
+
+
+
+
+
 #
 # **************************************************************
 #
