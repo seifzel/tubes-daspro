@@ -63,6 +63,24 @@ def MakeTranskrip(M: Mhs, listMK: list) -> Transkrip:
 def MakeSetTranskrip() -> SetTranskrip:
     return []
 # **************************************************************
+# APLIKASI FUNGSI KONSTRUKTOR
+M1 = MakeMhs("A11.01", "Reno") # -> Membuat objek Mhs
+MK1 = MakeMatkul("Daspro", 3, [2.0, 3.0]) # -> Membuat objek Matkul
+MK2 = MakeMatkul("Strukdis", 2, []) # -> Membuat objek Matkul
+T1 = MakeTranskrip(M1, [MK1, MK2]) # -> Membuat objek Transkrip
+
+M2 = MakeMhs("A11.02", "Andi")
+MK3 = MakeMatkul("Daspro", 3, [2.0, 3.0])
+MK4 = MakeMatkul("Matdis", 2, [4.0])
+T2 = MakeTranskrip(M2, [MK3, MK4])
+
+M3 = MakeMhs("A11.03", "Budi")
+MK5 = MakeMatkul("Daspro", 3, [1.0, 2.0])
+MK6 = MakeMatkul("Kalkulus", 4, [3.0])
+T3 = MakeTranskrip(M3, [MK5, MK6])
+
+S1 = MakeSetTranskrip() # -> Membuat objek Set Transkrip
+# **************************************************************
 # DEFINISI DAN SPESIFIKASI FUNGSI SELEKTOR
 '''
 GetNIM: Mhs -> string
@@ -109,12 +127,37 @@ def GetMhs(T: Transkrip) -> Mhs:
 def GetListMatkul(T: Transkrip) -> list:
     return T[1]
 # **************************************************************
+# APLIKASI FUNGSI SELEKTOR
+print("NIM Mahasiswa: " + GetNIM(M1)) # -> "A11.2020.01234"
+print("Nama Mahasiswa: " + GetNama(M1)) # -> "Reno"
+print("Mata Kuliah Mhs: " + GetNamaMK(MK1)) # -> "Daspro"
+print("SKS " + GetNamaMK(MK1) + ": " + str(GetSKS(MK1))) # -> 3
+print("Nilai " + GetNamaMK(MK1) + ": " + str(GetNilai(MK1))) # -> [2.0, 3.0]
+print("Data Mhs: " + str(GetMhs(T1))) # -> M (objek Mahasiswa)
+print("Matkul dan Nilai Mhs: " + str(GetListMatkul(T1))) # -> [MK1, MK2]
+# **************************************************************
 # DEFINISI DAN SPESIFIKASI FUNGSI ANTARA
 '''
-{Definisi dan spesifikasi untuk fungsi antara terletak pada file list_operators.py. Implementasi fungsi
-konstruktor, selektor, predikat, dan operator koleksi objek list dijelaskan pada file list_operators.py.
-Fungsi di dalam file list_operators.py diimpor ke file ini menggunakan fungsi import bawaan bahasa
-pemrograman python.}
+{Fungsi antara dasar untuk implementasi list terletak pada file list_operators.py. Fungsi di dalam file list_operators.py
+diimpor ke file ini menggunakan fungsi import bawaan bahasa pemrograman python.}
+
+AddNilaiPadaList: list of Matkul, string, real -> list of matkul
+    {AddNilaiPadaList(listMK, namaMK, nilai) menambahkan nilai baru ke dalam list nilai dari suatu mata
+     kuliah yang spesifik dalam sebuah list mata kuliah.}
+
+MaxTranskrip: SetTranskrip -> Transkrip
+    {MaxTranskrip(S) mencari dan mengembalikan transkrip dengan IPK tertinggi dari sebuah SetTranskrip.
+     Fungsi bekerja secara rekursif dengan membandingkan IPK setiap transkrip untuk menemukan yang terbesar}
+
+MKMaxPadaList: list of Matkul, SetTranskrip -> string
+    {MKMaxPadaList(listMK, S) mencari nama mata kuliah yang paling sering diulang dari sebuah list mata kuliah,
+     dengan mempertimbangkan frekuensi pengulangan di seluruh SetTranskrip. Fungsi digunakan sebagai helper untuk
+     fungsi MatkulPalingSeringDiulang}
+
+CountMengulangMKPadaSet: SetTranskrip, string -> integer
+    {CountMengulangMKPadaSet(S, namaMK) menghitung jumlah mahasiswa (transkrip) dalam SetTranskrip yang mengulang
+     mata kuliah dengan nama tertentu. Sebuah mata kuliah dianggap diulang jika memiliki lebih dari satu nilai
+     dalam list nilainya.}
 '''
 # **************************************************************
 # REALISASI FUNGSI ANTARA
@@ -336,7 +379,6 @@ def CountMhsLulusSemuaMatkul(S: SetTranskrip) -> int:
         else:
             return CountMhsLulusSemuaMatkul(Tail(S))
 
-
 def MatkulPalingSeringDiulang(S: SetTranskrip) -> str:
     if IsEmpty(S):
         return ""
@@ -352,85 +394,38 @@ def CountMhsDenganIPKRentang(S: SetTranskrip, a: float, b: float) -> int:
         else:
             return CountMhsDenganIPKRentang(Tail(S), a, b)
 # **************************************************************
-# APLIKASI
-M = MakeMhs("A11.2020.01234", "Reno") # -> Membuat objek Mhs
-MK1 = MakeMatkul("Daspro", 3, [2.0, 3.0]) # -> Membuat objek Matkul
-MK2 = MakeMatkul("Matdis", 2, []) # -> Membuat objek Matkul
-T = MakeTranskrip(M, [MK1, MK2]) # -> Membuat objek Transkrip
-S1 = MakeSetTranskrip() 
-M1 = MakeMhs("A11.01", "Reno")
-T1 = MakeTranskrip(M1, [MK1, MK2])
+# APLIKASI OPERATOR
+print("Nilai " + GetNamaMK(MK1) + " Sekarang: " + str(NilaiSekarangMK(MK1))) # -> 3.0
+print("Nilai " + GetNamaMK(MK2) + " Sekarang: " + str(NilaiSekarangMK(MK2))) # -> -1.0
+print("Status Ambil " + GetNamaMK(MK2) + ": " + str(SudahAmbilMK(MK2))) # -> False
+print("Status Mengulang " + GetNamaMK(MK1) + ": " + str(MengulangMK(MK1))) # -> True
+print("Status Lulus " + GetNamaMK(MK1) + ": " + str(LulusMK(MK1))) # -> True
+print("Hasil Pencarian Matkul: " + str(CariMatkul(T1, "Daspro"))) # -> MK1 (objek Matkul)
+
+#Misalkan kita menambahkan nilai untuk matkul kedua
+MK2 = MakeMatkul("Strukdis", 2, [3.0, 4.0]) # -> Mengubah data MK2
+T1 = MakeTranskrip(M1, [MK1, MK2]) # -> Mengubah objek Transkrip T1
+
+print("Total SKS Lulus: " + str(TotalSKSLulus(T1))) # -> 5
+print("Total SKS Mengulang: " + str(JumlahMatkulMengulang(T1))) # -> 2
+print("IPK: " + str(IPKTranskrip(T1))) # -> 3.4
+
+#Misalkan kita mengubah lagi nilai untuk matkul kedua
+MK2 = MakeMatkul("Strukdis", 2, [3.0]) # -> Mengubah data MK2
+T1 = MakeTranskrip(M1, [MK1, MK2]) # -> Mengubah objek Transkrip T1
+
 S2 = AddTranskrip(S1, T1) 
 S3 = AddTranskrip(S2, T1)
-M2 = MakeMhs("A11.02", "Andi")
-MK4 = MakeMatkul("Matdis", 2, [4.0])
-T2 = MakeTranskrip(M2, [MK1, MK4])
 S4 = AddTranskrip(S3, T2)
-M3 = MakeMhs("A11.03", "Budi")
-MK5 = MakeMatkul("Daspro", 3, [1.0, 2.0])
-MK6 = MakeMatkul("Kalkulus", 4, [3.0])
-T3 = MakeTranskrip(M3, [MK5, MK6])
 S5 = AddTranskrip(S4, T3)
+S6 = AddNilaiMatkul(S5, "A11.01", "Daspro", 3.0)
 S7 = AddNilaiMatkul(S5, "A11.02", "Daspro", 4.0)
 
-print(GetNIM(M)) # -> "A11.2020.01234"
-print(GetNama(M)) # -> "Reno"
-
-print(GetNamaMK(MK1)) # -> "Daspro"
-print(GetSKS(MK1)) # -> 3
-print(GetNilai(MK1)) # -> [2.0, 3.0]
-print(NilaiSekarangMK(MK1)) # -> 3.0
-print(NilaiSekarangMK(MK2)) # -> -1.0
-print(SudahAmbilMK(MK2)) # -> False
-print(MengulangMK(MK1)) # -> True
-print(LulusMK(MK1)) # -> True
-
-MK2 = MakeMatkul("Matdis", 2, [3.0, 4.0])
-T = MakeTranskrip(M, [MK1, MK2])
-S1 = MakeSetTranskrip() 
-M1 = MakeMhs("A11.01", "Reno")
-T1 = MakeTranskrip(M1, [MK1, MK2])
-S2 = AddTranskrip(S1, T1) 
-S3 = AddTranskrip(S2, T1)
-M2 = MakeMhs("A11.02", "Andi")
-MK4 = MakeMatkul("Matdis", 2, [4.0])
-S4 = AddTranskrip(S3, T2)
-M3 = MakeMhs("A11.03", "Budi")
-MK5 = MakeMatkul("Daspro", 3, [1.0, 2.0])
-MK6 = MakeMatkul("Kalkulus", 4, [3.0])
-T3 = MakeTranskrip(M3, [MK5, MK6])
-S5 = AddTranskrip(S4, T3)
-S7 = AddNilaiMatkul(S5, "A11.02", "Daspro", 4.0)
-
-print(GetMhs(T)) # -> M (objek Mahasiswa)
-print(GetListMatkul(T)) # -> [MK1, MK2]
-print(CariMatkul(T, "Daspro")) # -> MK1 (objek Matkul)
-print(TotalSKSLulus(T)) # -> 5
-print(JumlahMatkulMengulang(T)) # -> 2
-print(IPKTranskrip(T)) # -> 3.4
-
-MK2 = MakeMatkul("Matdis", 2, [3.0])
-T = MakeTranskrip(M, [MK1, MK2])
-S1 = MakeSetTranskrip() 
-M1 = MakeMhs("A11.01", "Reno")
-T1 = MakeTranskrip(M1, [MK1, MK2])
-S2 = AddTranskrip(S1, T1) 
-S3 = AddTranskrip(S2, T1)
-M2 = MakeMhs("A11.02", "Andi")
-MK4 = MakeMatkul("Matdis", 2, [4.0])
-S4 = AddTranskrip(S3, T2)
-M3 = MakeMhs("A11.03", "Budi")
-MK5 = MakeMatkul("Daspro", 3, [1.0, 2.0])
-MK6 = MakeMatkul("Kalkulus", 4, [3.0])
-T3 = MakeTranskrip(M3, [MK5, MK6])
-S5 = AddTranskrip(S4, T3)
-S7 = AddNilaiMatkul(S5, "A11.02", "Daspro", 4.0)
-
-print(CariTranskripMhs(S7,"A11.01"))
-print(CariTranskripMhs(S7, "A11.03"))
-print(TopIPK(S7))
-print(CountMhsPernahMengulang(S7) )
-print(CountMhsLulusSemuaMatkul(S7))
-print(MatkulPalingSeringDiulang(S7))
-print(CountMhsDenganIPKRentang(S7, 2.0, 3.0))
+print("Hasil Pencarian Transkrip: " + str(CariTranskripMhs(S7,"A11.01")))
+print("Hasil Pencarian Transkrip: " + str(CariTranskripMhs(S7, "A11.03")))
+print("Mhs dengan IPK Tertinggi: " + str(TopIPK(S7)))
+print("Banyak Mhs yang Mengulang: " + str(CountMhsPernahMengulang(S7)))
+print("Banyak Mhs yang Lulus: " + str(CountMhsLulusSemuaMatkul(S7)))
+print("Top Matkul Diulang: " + str(MatkulPalingSeringDiulang(S7)))
+print("Mhs dengan Rentang IPK 2.0-3.0: "+ str(CountMhsDenganIPKRentang(S7, 2.0, 3.0)))
 # **************************************************************
