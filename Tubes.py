@@ -120,6 +120,16 @@ pemrograman python.}
 # REALISASI FUNGSI ANTARA
 from list_operators import *
 
+def AddNilaiPadaList(listMK, namaMK, nilai):
+    if IsEmpty(listMK):
+        return []
+    else:
+        if GetNamaMK(FirstElmt(listMK)) == namaMK:
+            return Konso(MakeMatkul(GetNamaMK(FirstElmt(listMK)), GetSKS(FirstElmt(listMK)), Konsi(GetNilai(FirstElmt(listMK)), nilai)),
+                         Tail(listMK))
+        else:
+            return Konso(FirstElmt(listMK), AddNilaiPadaList(Tail(listMK), namaMK, nilai))
+
 def MaxTranskrip(S):
     if IsEmpty(S):
         return []
@@ -281,7 +291,7 @@ def AddTranskrip(S: SetTranskrip, T: Transkrip) -> SetTranskrip:
         if GetNIM(GetMhs(FirstElmt(S))) == GetNIM(GetMhs(T)):
             return S
         else:
-            return Konsi([FirstElmt(S)], AddTranskrip(Tail(S), T))
+            return Konso(FirstElmt(S), AddTranskrip(Tail(S), T))
 
 def AddNilaiMatkul(S: SetTranskrip, nim: str, namaMK: str, nilai: float) -> SetTranskrip:
     if IsEmpty(S):
@@ -353,17 +363,15 @@ T1 = MakeTranskrip(M1, [MK1, MK2])
 S2 = AddTranskrip(S1, T1) 
 S3 = AddTranskrip(S2, T1)
 M2 = MakeMhs("A11.02", "Andi")
-MK3 = MakeMatkul("Daspro", 3, [3.0])
 MK4 = MakeMatkul("Matdis", 2, [4.0])
-T2 = MakeTranskrip(M2, [MK3, MK4])
+T2 = MakeTranskrip(M2, [MK1, MK4])
 S4 = AddTranskrip(S3, T2)
 M3 = MakeMhs("A11.03", "Budi")
 MK5 = MakeMatkul("Daspro", 3, [1.0, 2.0])
 MK6 = MakeMatkul("Kalkulus", 4, [3.0])
 T3 = MakeTranskrip(M3, [MK5, MK6])
 S5 = AddTranskrip(S4, T3)
-S6 = AddNilaiMatkul(S5, "A11.01", "Daspro", 3.0)
-S7 = AddNilaiMatkul(S6, "A11.02", "Daspro", 4.0)
+S7 = AddNilaiMatkul(S5, "A11.02", "Daspro", 4.0)
 
 print(GetNIM(M)) # -> "A11.2020.01234"
 print(GetNama(M)) # -> "Reno"
@@ -377,12 +385,46 @@ print(SudahAmbilMK(MK2)) # -> False
 print(MengulangMK(MK1)) # -> True
 print(LulusMK(MK1)) # -> True
 
+MK2 = MakeMatkul("Matdis", 2, [3.0, 4.0])
+T = MakeTranskrip(M, [MK1, MK2])
+S1 = MakeSetTranskrip() 
+M1 = MakeMhs("A11.01", "Reno")
+T1 = MakeTranskrip(M1, [MK1, MK2])
+S2 = AddTranskrip(S1, T1) 
+S3 = AddTranskrip(S2, T1)
+M2 = MakeMhs("A11.02", "Andi")
+MK4 = MakeMatkul("Matdis", 2, [4.0])
+S4 = AddTranskrip(S3, T2)
+M3 = MakeMhs("A11.03", "Budi")
+MK5 = MakeMatkul("Daspro", 3, [1.0, 2.0])
+MK6 = MakeMatkul("Kalkulus", 4, [3.0])
+T3 = MakeTranskrip(M3, [MK5, MK6])
+S5 = AddTranskrip(S4, T3)
+S7 = AddNilaiMatkul(S5, "A11.02", "Daspro", 4.0)
+
 print(GetMhs(T)) # -> M (objek Mahasiswa)
 print(GetListMatkul(T)) # -> [MK1, MK2]
 print(CariMatkul(T, "Daspro")) # -> MK1 (objek Matkul)
 print(TotalSKSLulus(T)) # -> 5
 print(JumlahMatkulMengulang(T)) # -> 2
 print(IPKTranskrip(T)) # -> 3.4
+
+MK2 = MakeMatkul("Matdis", 2, [3.0])
+T = MakeTranskrip(M, [MK1, MK2])
+S1 = MakeSetTranskrip() 
+M1 = MakeMhs("A11.01", "Reno")
+T1 = MakeTranskrip(M1, [MK1, MK2])
+S2 = AddTranskrip(S1, T1) 
+S3 = AddTranskrip(S2, T1)
+M2 = MakeMhs("A11.02", "Andi")
+MK4 = MakeMatkul("Matdis", 2, [4.0])
+S4 = AddTranskrip(S3, T2)
+M3 = MakeMhs("A11.03", "Budi")
+MK5 = MakeMatkul("Daspro", 3, [1.0, 2.0])
+MK6 = MakeMatkul("Kalkulus", 4, [3.0])
+T3 = MakeTranskrip(M3, [MK5, MK6])
+S5 = AddTranskrip(S4, T3)
+S7 = AddNilaiMatkul(S5, "A11.02", "Daspro", 4.0)
 
 print(CariTranskripMhs(S7,"A11.01"))
 print(CariTranskripMhs(S7, "A11.03"))
